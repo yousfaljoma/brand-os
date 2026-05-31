@@ -6,7 +6,14 @@ const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 function createPrismaClient() {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
-    throw new Error("DATABASE_URL environment variable is not set");
+    return new Proxy({} as PrismaClient, {
+      get() {
+        throw new Error(
+          "DATABASE_URL environment variable is not set. " +
+          "قم بتعيين متغير DATABASE_URL في Vercel Environment Variables."
+        );
+      },
+    });
   }
 
   const adapter = new PrismaNeon({ connectionString });
