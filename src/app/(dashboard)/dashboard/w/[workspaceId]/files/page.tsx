@@ -1,0 +1,24 @@
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+import { redirect, notFound } from "next/navigation";
+import { FilesView } from "@/components/FilesView";
+
+export default async function FilesPage({
+  params,
+}: {
+  params: Promise<{ workspaceId: string }>;
+}) {
+  const session = await auth();
+  if (!session?.user?.id) redirect("/");
+
+  const { workspaceId } = await params;
+
+  const workspace = await prisma.workspace.findFirst({
+    where: { id: workspaceId, userId: session.user.id },
+  });
+  if (!workspace) notFound();
+
+  return (
+    <FilesView workspaceId={workspaceId} workspaceName={workspace.name} />
+  );
+}
