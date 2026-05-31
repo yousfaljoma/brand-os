@@ -4,7 +4,7 @@ import { OnboardingForm } from "@/components/OnboardingForm";
 
 export default async function OnboardingPage() {
   const session = await auth();
-  if (!session) redirect("/");
+  if (!session?.user?.id) redirect("/");
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
